@@ -134,7 +134,7 @@ const MovieScreen: FunctionComponent = () => {
                                             </button>
                                         ) : (
                                             <div className='flex inline-flex items-center'>
-                                                {movie.episodes.map((episode, index) => (
+                                                {movie.episodes.map((episode: { number: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined }, index: string | number) => (
                                                     <button
                                                         onClick={() => showMovie(movie.episodes[index].url)}
                                                         className='episode ml-2 bg-orange-500 text-gray-900 rounded font-semibold px-5 py-4 hover:bg-orange-600 transition ease-in-out duration-150'
@@ -188,7 +188,7 @@ const MovieScreen: FunctionComponent = () => {
                                         </div>
                                         <div className="modal-body px-8 py-8">
                                             <div className="responsive-container overflow-hidden relative" style={{ paddingTop: '56.25%' }}>
-                                                <Player url={url} />
+                                                <Player url={url || ''} />
                                             </div>
                                         </div>
                                     </div>

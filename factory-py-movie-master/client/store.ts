@@ -1,106 +1,100 @@
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { createWrapper } from "next-redux-wrapper";
 import {
-    Action,
-    AnyAction,
-    combineReducers,
-    configureStore,
-    EnhancedStore,
-    Reducer,
-    ThunkAction,
-} from '@reduxjs/toolkit'
-import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware'
-import { createWrapper } from 'next-redux-wrapper'
-import {
+    persistStore,
+    persistReducer,
     FLUSH,
+    REHYDRATE,
     PAUSE,
     PERSIST,
-    PersistConfig,
-    persistReducer,
-    persistStore,
     PURGE,
     REGISTER,
-    REHYDRATE,
-} from 'redux-persist'
-import { PersistPartial } from 'redux-persist/es/persistReducer'
-import storage from 'redux-persist/lib/storage'
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
 import {
     userLoginSlice,
     userRegisterSlice,
     userDetailsSlice,
     userUpdateProfileSlice,
-} from 'reducers/user'
-
+} from "reducers/user";
 import {
     movieListSlice,
     movieDetailSlice,
     movieTopSlice,
     createMovieReviewSlice,
-} from 'reducers/movie'
+} from "reducers/movie";
+import { actorListSlice, actorDetailSlice } from "reducers/actor";
 
-import {
-    actorListSlice,
-    actorDetailSlice,
-} from 'reducers/actor'
+// Kiểm tra môi trường trước khi sử dụng storage
+const createNoopStorage = () => ({
+    getItem: async () => null,
+    setItem: async () => {},
+    removeItem: async () => {},
+});
 
-function optionalPersistReducer<S, A extends Action = AnyAction>(
-    isServer: boolean,
-    reducer: Reducer<S, A>,
-    persistConfig: PersistConfig<S>
-): Reducer<S, A> | Reducer<S & PersistPartial, A> {
-    return isServer ? reducer : persistReducer(persistConfig, reducer)
-}
+const storageClient = typeof window !== "undefined" ? createWebStorage("local") : createNoopStorage();
 
-function createReducer(isServer: boolean): Reducer {
-    const userLoginPersistConfig = {
-        key: 'userLogin',
-        storage,
-        whitelist: ['userInfo'], // place to select which state you want to persist
+// Cấu hình persist
+const persistConfig = {
+    key: "root",
+    storage: storageClient, // Dùng storage phù hợp với môi trường
+    whitelist: ["userLogin"], // Chỉ lưu Redux state của userLogin
+};
+
+// Kết hợp reducers
+const rootReducer = combineReducers({
+    userLogin: userLoginSlice.reducer,
+    userRegister: userRegisterSlice.reducer,
+    userDetails: userDetailsSlice.reducer,
+    userUpdateProfile: userUpdateProfileSlice.reducer,
+    movieList: movieListSlice.reducer,
+    movieDetail: movieDetailSlice.reducer,
+    movieTopRated: movieTopSlice.reducer,
+    movieCreateReview: createMovieReviewSlice.reducer,
+    actorList: actorListSlice.reducer,
+    actorDetail: actorDetailSlice.reducer,
+});
+
+// Bọc rootReducer với persistReducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// Định nghĩa các kiểu dữ liệu cho Redux store
+export type ReduxState = ReturnType<typeof rootReducer>;
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
+
+// Hàm tạo store
+const makeStore = () => {
+    const isServer = typeof window === "undefined";
+
+    if (isServer) {
+        return configureStore({
+            reducer: rootReducer,
+            middleware: (getDefaultMiddleware) =>
+                getDefaultMiddleware({
+                    serializableCheck: false,
+                }),
+            devTools: process.env.NODE_ENV !== "production",
+        });
     }
-    const rootReducer = combineReducers({
-        userLogin: optionalPersistReducer(isServer, userLoginSlice.reducer, userLoginPersistConfig),
-        userRegister: userRegisterSlice.reducer,
-        userDetails: userDetailsSlice.reducer,
-        userUpdateProfile: userUpdateProfileSlice.reducer,
-        movieList: movieListSlice.reducer,
-        movieDetail: movieDetailSlice.reducer,
-        movieTopRated: movieTopSlice.reducer,
-        movieCreateReview: createMovieReviewSlice.reducer,
-        actorList: actorListSlice.reducer,
-        actorDetail: actorDetailSlice.reducer,
-    })
-    return rootReducer
-}
 
-const dummyServerReducer = createReducer(true)
+    const store = configureStore({
+        reducer: persistedReducer,
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({
+                serializableCheck: {
+                    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+                },
+            }),
+        devTools: process.env.NODE_ENV !== "production",
+    });
 
-export type ReduxState = ReturnType<typeof dummyServerReducer>
+    (store as any).__persistor = persistStore(store);
+    return store;
+};
 
-export type StoreType = EnhancedStore<ReduxState, AnyAction, [ThunkMiddlewareFor<ReduxState>]>
-
-const makeStore = (): StoreType => {
-    const isServer = typeof window === 'undefined'
-    const store = (configureStore<ReduxState>({
-        reducer: createReducer(isServer),
-        // @ts-ignore: cant be bothered right now
-        middleware: (getDefaultMiddleware) => getDefaultMiddleware<ReduxState>({
-            thunk: true,
-            immutableCheck: true,
-            // @ts-ignore: wrong typescript for this
-            serializableCheck: {
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-            },
-        }),
-        devTools: true,
-        //preloadedState: initialState,
-    }) as unknown) as StoreType
-
-    if (!isServer) {
-        // @ts-ignore: this will be ok
-        store.__persistor = persistStore(store) // This creates a persistor object & push that persisted object to .__persistor, so that we can avail the persistability feature
-    }
-    return store
-}
-
-export const wrapper = createWrapper<ReduxState>(makeStore, { debug: true })
-
-export type AppThunk = ThunkAction<void, ReduxState, unknown, Action<string>>
+// Khởi tạo wrapper
+export const wrapper = createWrapper<AppStore>(makeStore, { debug: process.env.NODE_ENV !== "production" });

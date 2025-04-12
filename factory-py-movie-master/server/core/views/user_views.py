@@ -1,16 +1,16 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.response import Response
+from django.shortcuts import render #type: ignore
+from rest_framework.decorators import api_view, permission_classes #type: ignore
+from rest_framework.permissions import IsAuthenticated, IsAdminUser #type: ignore
+from rest_framework.response import Response #type: ignore
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User #type: ignore
 from core.serializers import UserSerializer, UserSerializerWithToken
 # Create your views here.
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #type: ignore
+from rest_framework_simplejwt.views import TokenObtainPairView #type: ignore
 
-from django.contrib.auth.hashers import make_password
-from rest_framework import status
+from django.contrib.auth.hashers import make_password #type: ignore
+from rest_framework import status #type: ignore
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

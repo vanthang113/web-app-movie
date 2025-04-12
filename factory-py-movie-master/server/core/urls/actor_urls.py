@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path #type: ignore
 from core.views import actor_views as views
 
 urlpatterns = [

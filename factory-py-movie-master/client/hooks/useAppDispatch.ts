@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux'
-import { StoreType } from 'store'
+import { AppStore } from 'store'
 
-let store: StoreType
+let store: AppStore
 
 export type AppDispatch = typeof store.dispatch
 

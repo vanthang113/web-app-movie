@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="D:\factory-py-movie-master\factory-py-movie-master\server\venv"
+VIRTUAL_ENV="C:\Users\TechCare\Desktop\WebFILM\factory-py-movie-master\server\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

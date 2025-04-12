@@ -1,6 +1,6 @@
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import serializers #type: ignore
+from django.contrib.auth.models import User #type: ignore
+from rest_framework_simplejwt.tokens import RefreshToken #type: ignore
 from .models import Episode, Review, Movie, Actor
 
 

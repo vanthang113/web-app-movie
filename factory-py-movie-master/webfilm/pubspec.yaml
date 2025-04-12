@@ -1,0 +1,35 @@
+name: webfilm
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.1.0 
+  cupertino_icons: ^1.0.2
+  http: ^1.1.0
+  provider: ^6.0.5
+  cached_network_image: ^3.2.3
+  flutter_rating_bar: ^4.0.1
+  shared_preferences: ^2.2.0
+  video_player: ^2.7.2
+  chewie: ^1.7.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+  fonts:
+    - family: TimesNewRoman
+      fonts:
+        - asset: assets/fonts/times.ttf
+      

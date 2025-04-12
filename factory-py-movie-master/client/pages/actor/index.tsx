@@ -44,11 +44,11 @@ const ActorListScreen: FunctionComponent = () => {
                 {loading ? (
                     <Loader />
                 ) : error ? (
-                    <Message />
+                    <Message>{error}</Message>
                 ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
                         {actors.map((actor) => (
-                            <div className='actors mt-8'>
+                            <div key={actor._id} className='actors mt-8'>
                                 <Link href={`/actor/${actor._id}`}>
                                     <img
                                         src={imageUrl(actor.image)} alt={actor.name}

@@ -15,7 +15,7 @@ export const createMovieReview = createAsyncThunk<
 >(
     'MOVIE_CREATE_REVIEW',
     async (payload: CreateReviewInput & { movieId: string }, thunkAPI) => {
-        const state: ReduxState = thunkAPI.getState()
+        const state = thunkAPI.getState() as ReduxState
         const userLogin: UserLoginState = state.userLogin
         const token = userLogin.userInfo?.token
         const { movieId } = payload

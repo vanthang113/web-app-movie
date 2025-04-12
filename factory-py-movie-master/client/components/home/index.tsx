@@ -20,9 +20,8 @@ const HomeComponent: FunctionComponent<HomeProps> = ({
     const dispatch = useAppDispatch()
     const movieList = useSelector((state: ReduxState) => state.movieList as MovieListState)
     const { loading, movies, error, page, pages } = movieList
-
     useEffect(() => {
-        dispatch(listMovies({ keyword, pageNumber }))
+        dispatch(listMovies({ keyword, pageNumber }) as any)
     }, [dispatch, keyword, pageNumber])
     return (
         <>

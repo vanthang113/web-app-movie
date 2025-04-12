@@ -1,5 +1,5 @@
-from django.db import models
-from django.contrib.auth.models import User
+from django.db import models #type: ignore
+from django.contrib.auth.models import User #type: ignore
 import uuid
 
 # Create your models here.
@@ -13,8 +13,7 @@ class Actor(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
     birth = models.CharField(max_length=200, null=True, blank=True)
     sex = models.BooleanField(null=True, blank=True)
-    image = models.ImageField(null=True, blank=True,
-                              default='/placeholder.png')
+    image = models.ImageField(null=True, blank=True,default='/placeholder.png')
     description = models.TextField(null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
 
@@ -43,6 +42,7 @@ class Movie(models.Model):
     numReviews = models.IntegerField(null=True, blank=True, default=0)
     views = models.IntegerField(null=True, blank=True, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
+    is_featured = models.BooleanField(default=False) #tôi đã thêm dòng này mới đây
 
     def __str__(self):
         return self.name

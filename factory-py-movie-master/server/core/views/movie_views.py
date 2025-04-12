@@ -1,14 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render #type: ignore
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.response import Response
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework.decorators import api_view, permission_classes #type: ignore
+from rest_framework.permissions import IsAuthenticated, IsAdminUser #type: ignore
+from rest_framework.response import Response #type: ignore
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger #type: ignore
 
 from core.models import Movie, Review
 from core.serializers import MovieSerializer, MovieDetailSerializer, TVShowDetailSerializer
 
-from rest_framework import status
+from rest_framework import status #type: ignore
 
 # ----------------------------
 # Guest
@@ -17,36 +17,42 @@ from rest_framework import status
 
 @api_view(['GET'])
 def getMovies(request):
-    query = request.query_params.get('keyword')
-    if query == None:
-        query = ''
-
-    movies = Movie.objects.filter(
-        name__icontains=query).order_by('-createdAt')
-
-    page = request.query_params.get('page')
-    paginator = Paginator(movies, 15)
-
     try:
-        movies = paginator.page(page)
-    except PageNotAnInteger:
-        movies = paginator.page(1)
-    except EmptyPage:
-        movies = paginator.page(paginator.num_pages)
+        query = request.query_params.get('keyword')
+        if query == None:
+            query = ''
 
-    if page == None:
-        page = 1
+        movies = Movie.objects.filter(
+            name__icontains=query).order_by('-createdAt')
 
-    page = int(page)
-    serializer = MovieSerializer(movies, many=True)
-    return Response({'movies': serializer.data, 'page': page, 'pages': paginator.num_pages})
+        page = request.query_params.get('page')
+        paginator = Paginator(movies, 15)
+
+        try:
+            movies = paginator.page(page)
+        except PageNotAnInteger:
+            movies = paginator.page(1)
+        except EmptyPage:
+            movies = paginator.page(paginator.num_pages)
+
+        if page == None:
+            page = 1
+
+        page = int(page)
+        serializer = MovieSerializer(movies, many=True)
+        return Response({'movies': serializer.data, 'page': page, 'pages': paginator.num_pages})
+    except Exception as e:
+        return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
 def getTopMovies(request):
-    movies = Movie.objects.filter(rating__gte=4).order_by('-rating')[0:5]
-    serializer = MovieSerializer(movies, many=True)
-    return Response(serializer.data)
+    try:
+        movies = Movie.objects.filter(rating__gte=4).order_by('-rating')[0:5]
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])

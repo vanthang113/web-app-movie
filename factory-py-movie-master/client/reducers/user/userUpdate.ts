@@ -14,7 +14,10 @@ export const updateUserProfile = createAsyncThunk<
 >('USER_PROFILE_UPDATE', async (user, thunkAPI) => {
     const { name, email, password } = user
     const state: ReduxState = thunkAPI.getState() as ReduxState
-    const token = state.userLogin.userInfo.token
+    const token = state.userLogin.userInfo?.token
+    if (!token) {
+        throw new Error('No token found')
+    }
 
     const response = await fetch(`${baseUrl}/api/users/profile/update/`, {
         body: JSON.stringify({ email, password, name }),

@@ -28,6 +28,7 @@ export interface Movie {
 }
 
 export interface MovieDetail extends Movie {
+    [x: string]: any
     reviews: Array<Review>
 }
 
