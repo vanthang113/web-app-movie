@@ -34,4 +34,36 @@ yarn-error.log*
 # Build
 dist/
 build/
-*.egg-info/ 
+*.egg-info/
+
+# Large files
+*.node
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.tgz
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.wmv
+*.flv
+*.swf
+*.iso
+*.img
+*.vmdk
+*.vhd
+*.vhdx
+*.qcow2
+*.raw
+*.bin
+*.dat
+*.db
+*.sqlite
+*.sqlite3
+*.bak
+*.backup
+*.tmp
+*.temp 
