@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/movie.dart';
 
 class ApiService {
-final String _baseUrl = 'http://127.0.0.1:8000/api'; 
+final String baseUrl = 'http://127.0.0.1:8000/api';
   // Lấy danh sách phim
   Future<List<Movie>> getMovies({String? keyword, int page = 1}) async {
     try {

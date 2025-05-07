@@ -1,2 +1,4 @@
 # Ignore large node file
 .node 
+# Ignore Python virtual environment in server
+server/venv/ 

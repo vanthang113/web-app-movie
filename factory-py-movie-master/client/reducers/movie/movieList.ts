@@ -1,15 +1,10 @@
-import {
-    createAsyncThunk,
-    createSlice,
-} from '@reduxjs/toolkit'
-
+import {createAsyncThunk,createSlice,} from '@reduxjs/toolkit'
 import { Movie, MovieList } from 'interfaces'
 import api from 'utils/api'
 
 export const listMovies = createAsyncThunk<
     MovieList,
-    { keyword: string, pageNumber?: number }
->('MOVIE_LIST', async (args, { rejectWithValue }) => {
+    { keyword: string, pageNumber?: number }>('MOVIE_LIST', async (args, { rejectWithValue }) => {
     try {
         const { keyword } = args
         const pageNumber = args.pageNumber ?? 1
