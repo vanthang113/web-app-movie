@@ -67,4 +67,7 @@ build/
 *.bak
 *.backup
 *.tmp
-*.temp 
+*.temp
+
+# Submodules
+factory-py-movie-master/server/ 
